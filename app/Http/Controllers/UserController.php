@@ -12,16 +12,16 @@ use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
-    protected UserService $model;
+    protected UserService $service;
 
-    public function __construct(UserService $model)
+    public function __construct(UserService $service)
     {
-        $this->model = $model;
+        $this->service = $service;
     }
 
     public function index()
     {
-        $data = $this->model->allActive();
+        $data = $this->service->allActive();
 
         $compact = compact('data');
 
@@ -42,7 +42,7 @@ class UserController extends Controller
         $password = Hash::make(trim($validated['password']));
         $uuid = (string) Str::uuid();
 
-        $checkUser = $this->model->getByUser($username);
+        $checkUser = $this->service->getByUser($username);
 
         if($checkUser) {
             return response()->json([
@@ -52,7 +52,7 @@ class UserController extends Controller
                 'data' => null
             ], 200);
         } else {
-            $insert = $this->model->create([
+            $insert = $this->service->create([
                 'uuid_user' => $uuid,
                 'username' => $username,
                 'name' => $name,
@@ -80,7 +80,7 @@ class UserController extends Controller
 
     public function edit($id = null)
     {
-        $data = $this->model->getById($id);
+        $data = $this->service->getById($id);
 
         $compact = compact('data');
 
@@ -93,7 +93,7 @@ class UserController extends Controller
 
         $name = $validated['name'];
 
-        $update = $this->model->update($id, [
+        $update = $this->service->update($id, [
             'name' => $name,
         ]);
 
@@ -116,7 +116,7 @@ class UserController extends Controller
 
     public function delete($id = null)
     {
-        $data = $this->model->getById($id);
+        $data = $this->service->getById($id);
 
         if($data->level == 'Admin') {
             return response()->json([
@@ -126,7 +126,7 @@ class UserController extends Controller
                 'data' => null
             ], 200);
         } else {
-            $delete = $this->model->delete($id);
+            $delete = $this->service->delete($id);
 
             if($delete) {
                 return response()->json([
@@ -148,7 +148,7 @@ class UserController extends Controller
 
     public function editPassword($id = null)
     {
-        $data = $this->model->getById($id);
+        $data = $this->service->getById($id);
 
         $compact = compact('data');
 
@@ -161,7 +161,7 @@ class UserController extends Controller
 
         $password = trim($validated['password']);
 
-        $update = $this->model->update($id, [
+        $update = $this->service->update($id, [
             'password' => Hash::make($password),
         ]);
 

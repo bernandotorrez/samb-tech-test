@@ -77,6 +77,17 @@ class BaseService implements BaseInterface
         ->orderBy($this->orderBy['by'], $this->orderBy['order'])->with($with)->get();
     }
 
+     /**
+     * Get All Data (Status = 1) using Query View
+     *
+     * @param string $viewName
+     * @return Collection
+     */
+    public function allView(string $viewName)
+    {
+        return DB::table($viewName)->select($this->searchableColumnView)->orderBy($this->orderBy['by'], $this->orderBy['order'])->get();
+    }
+
     /**
      * Get All Data (Status = 1) using Query View
      *

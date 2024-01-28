@@ -64,14 +64,15 @@ Route::middleware(['frame', 'allowed.methods'])->group(function () {
             Route::controller(PenerimaanBarangController::class)->prefix('penerimaan-barang')
             ->name('penerimaan-barang.')->group(function () {
                 Route::get('/', 'index')->name('index');
-                Route::get('/create', 'index')->name('create');
+                Route::get('/create', 'create')->name('create');
+                Route::post('/store', 'store')->name('store');
             });
 
             // Pengeluaran Barang
             Route::controller(PengeluaranBarangController::class)->prefix('pengeluaran-barang')
             ->name('pengeluaran-barang.')->group(function () {
                 Route::get('/', 'index')->name('index');
-                Route::get('/create', 'index')->name('create');
+                Route::get('/create', 'create')->name('create');
             });
     
             // Artisan need Admin -> use middleware Admina

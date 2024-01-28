@@ -21,7 +21,7 @@
         <!-- Title -->
         <div class="hk-pg-header">
             <h4 class="hk-pg-title"><span class="pg-title-icon"><span class="feather-icon"><i
-                            data-feather="truck"></i></span></span>Master Warehouse</h4>
+                            data-feather="package"></i></span></span>Master Warehouse</h4>
         </div>
         <!-- /Title -->
 
