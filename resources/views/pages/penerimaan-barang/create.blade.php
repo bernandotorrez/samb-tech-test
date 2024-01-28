@@ -172,20 +172,16 @@
 
         $('#button-submit').click(function(e) {
             e.preventDefault();
-
-            let formHeader = new FormData(document.getElementById('form-header'))
-
-            const TrxInNo = $('#TrxInNo').val()
-            const WhsIdf = $('#WhsIdf').val()
-            const TrxInSuppIdf = $('#TrxInSuppIdf').val()
-            const TrxInNotes = $('#TrxInNotes').val()
-
-            formHeader.append('TrxInNo', TrxInNo)
-            formHeader.append('WhsIdf', WhsIdf)
-            formHeader.append('TrxInSuppIdf', TrxInSuppIdf)
-            formHeader.append('TrxInNotes', TrxInNotes)
-
+            
+            const formHeader = $('#form-header').serialize()
             const formDetail = $('#form-detail').serializeArray()
+
+            const formHeaderData = {
+                'TrxInNo': $('#TrxInNo').val(),
+                'WhsIdf':$('#WhsIdf').val(),
+                'TrxInSuppIdf': $('#TrxInSuppIdf').val(),
+                'TrxInNotes': $('#TrxInNotes').val()
+            }
 
             console.log(formHeader)
             console.log(formDetail)
@@ -203,13 +199,14 @@
                     return $.ajax({
                         method: 'POST',
                         url: "{{ route('penerimaan-barang.store') }}",
-                        contentType: false,
-                        processData: false,
-                        cacheData: false,
+                        type: 'JSON',
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
-                        data: fd,
+                        data: {
+                            formHeaderData,
+                            formDetail
+                        },
                         beforeSend: function() {
                             $('#button-submit').prop('disabled', true)
                         },
