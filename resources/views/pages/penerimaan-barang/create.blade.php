@@ -28,7 +28,7 @@
                 <section class="hk-sec-wrapper">
                     <div class="row">
                         <div class="col-sm">
-                            <form id="form-header">
+                            <form id="form">
                                 <div class="form-group">
                                     <h4 class="mb-30 text-center">Header</h4>
                                     <p class="">Nomor Transaksi</p>
@@ -55,7 +55,7 @@
 
                                 <div class="form-group">
                                     <p class="">Warehouse</p>
-                                    <select id="WhsIdf" name="WhsIdf" class="form-control" 
+                                    <select id="WhsIdf" name="WhsIdf" class="form-control"
                                         aria-placeholder="Pilih Warehouse"
                                         placeholder="Pilih Warehouse"
                                         required>
@@ -69,7 +69,7 @@
 
                                 <div class="form-group">
                                     <p class="">Supplier</p>
-                                    <select id="TrxInSuppIdf" name="TrxInSuppIdf" class="form-control" 
+                                    <select id="TrxInSuppIdf" name="TrxInSuppIdf" class="form-control"
                                         aria-placeholder="Pilih Supplier"
                                         placeholder="Pilih Supplier"
                                         required>
@@ -91,20 +91,12 @@
                                         required></textarea>
                                     <span class="text-danger" id="error-TrxInNotes"></span>
                                 </div>
-                            </form>
-                        </div>
-                    </div>
-                </section>
 
-                <section class="hk-sec-wrapper">
-                    <div class="row">
-                        <div class="col-sm">
-                            <form id="form-detail">
                                 <div id="product_list">
                                     <div class="form-group">
-                                        <h4 class="mb-30 text-center">Detail</h4>
+                                        <h4 class="mb-30 mt-30 text-center">Detail</h4>
                                         <p class="">Produk</p>
-                                        <select id="TrxInDProductIdf" name="TrxInDProductIdf[]" class="form-control" 
+                                        <select id="TrxInDProductIdf" name="TrxInDProductIdf[]" class="form-control TrxInDProductIdf"
                                             aria-placeholder="Pilih Supplier"
                                             placeholder="Pilih Supplier"
                                             required>
@@ -114,29 +106,29 @@
                                             @endforeach
                                         </select>
                                         <span class="text-danger" id="error-TrxInDProductIdf"></span>
-                                    </div>  
+                                    </div>
 
                                     <div class="form-group">
                                         <p class="">Dus</p>
-                                        <input type="text" class="form-control"
+                                        <input type="text" class="form-control TrxInDQtyDus"
                                             id="TrxInDQtyDus" name="TrxInDQtyDus[]"
                                             autocomplete="off"
                                             minlength="1" maxlength="4"
                                             onkeypress="return onlyNumberKey(event)"
                                             required>
                                         <span class="text-danger" id="error-TrxInDQtyDus"></span>
-                                    </div> 
+                                    </div>
 
                                     <div class="form-group">
                                         <p class="">Pieces</p>
-                                        <input type="text" class="form-control"
+                                        <input type="text" class="form-control TrxInDQtyPcs"
                                             id="TrxInDQtyPcs" name="TrxInDQtyPcs[]"
                                             autocomplete="off"
                                             minlength="1" maxlength="4"
                                             onkeypress="return onlyNumberKey(event)"
                                             required>
                                         <span class="text-danger" id="error-TrxInDQtyPcs"></span>
-                                    </div> 
+                                    </div>
                                 </div>
 
                                 <div id="new_product_list"></div>
@@ -162,7 +154,7 @@
             $('#product_list').clone().appendTo('#new_product_list')
         })
 
-        function onlyNumberKey(evt) {  
+        function onlyNumberKey(evt) {
             // Only ASCII character in that range allowed
             let ASCIICode = (evt.which) ? evt.which : evt.keyCode
             if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57))
@@ -170,21 +162,28 @@
             return true;
         }
 
-        $('#button-submit').click(function(e) {
+        $('#form').submit(function(e) {
             e.preventDefault();
-            
-            const formHeader = $('#form-header').serialize()
-            const formDetail = $('#form-detail').serializeArray()
 
-            const formHeaderData = {
+            let details = []
+            const products = $(".TrxInDProductIdf");
+
+            for(let i = 0; i <= products.length - 1; i++) {
+                const array = {
+                    'TrxInDProductIdf': $(".TrxInDProductIdf")[i].value,
+                    'TrxInDQtyDus': $(".TrxInDQtyDus")[i].value,
+                    'TrxInDQtyPcs': $(".TrxInDQtyPcs")[i].value,
+                }
+
+                details.push(array)
+            }
+
+            const header = {
                 'TrxInNo': $('#TrxInNo').val(),
                 'WhsIdf':$('#WhsIdf').val(),
                 'TrxInSuppIdf': $('#TrxInSuppIdf').val(),
                 'TrxInNotes': $('#TrxInNotes').val()
             }
-
-            console.log(formHeader)
-            console.log(formDetail)
 
             Swal.fire({
                 title: 'Yakin ingin Submit?',
@@ -204,8 +203,8 @@
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
                         data: {
-                            formHeaderData,
-                            formDetail
+                            header,
+                            details
                         },
                         beforeSend: function() {
                             $('#button-submit').prop('disabled', true)
@@ -237,7 +236,7 @@
                                 confirmButtonColor: '#0058a2',
                             }).then(function() {
                                 if(success) {
-                                    window.location = "{{ route('master-warehouse.index') }}";
+                                    window.location = "{{ route('penerimaan-barang.index') }}";
                                 }
                             });
 
@@ -276,101 +275,6 @@
                                     showCancelButton: false,
                                     confirmButtonText: 'Tutup',
                                     confirmButtonColor: '#0058a2',
-                                })
-
-                                $('#button-submit').prop('disabled', false)
-                            },
-                        }
-                    })
-                },
-                allowOutsideClick: () => !Swal.isLoading()
-            }).then((result) => {
-
-            })
-        })
-
-        $('#form').submit(function(e) {
-            e.preventDefault();
-
-            var WhsName = $('#WhsName').val()
-
-            Swal.fire({
-                title: 'Yakin ingin Submit?',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'Submit',
-                cancelButtonText: 'Batal',
-                confirmButtonColor: '#0058a2',
-                cancelButtonColor: '#f83f37',
-                showLoaderOnConfirm: true,
-                preConfirm: () => {
-                    return $.ajax({
-                        method: 'POST',
-                        url: "{{ route('master-warehouse.store') }}",
-                        type: 'JSON',
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        },
-                        data: {
-                            WhsName
-                        },
-                        beforeSend: function() {
-                            $('#button-submit').prop('disabled', true)
-                        },
-                        success: function(response) {
-                            var {
-                                code,
-                                success,
-                                message,
-                                data
-                            } = response;
-
-                            var swalData = success ? {
-                                'class': 'success',
-                                'title': 'Sukses',
-                                'text': message
-                            } : {
-                                'class': 'error',
-                                'title': 'Gagal',
-                                'text': message
-                            }
-
-                            Swal.fire({
-                                title: swalData.title,
-                                text: swalData.text,
-                                icon: swalData.class,
-                                showCancelButton: false,
-                                confirmButtonText: 'Tutup',
-                                confirmButtonColor: '#0058a2',
-                            }).then(function() {
-                                if(success) {
-                                    window.location = "{{ route('master-warehouse.index') }}";
-                                }
-                            });
-
-                            $('#button-submit').prop('disabled', false)
-                        },
-                        error: function (err) {
-                            const response = err.responseJSON
-
-                            Swal.fire({
-                                title: 'Gagal',
-                                text: response.message,
-                                icon: 'warning',
-                                showCancelButton: false,
-                                confirmButtonText: 'Tutup',
-                                confirmButtonColor: '#0058a2',
-                            })
-
-                            $('#button-submit').prop('disabled', false)
-                        },
-                        statusCode: {
-                            422: function(response, data) {
-                                var responseJSON = response.responseJSON
-                                var errors = responseJSON.errors
-
-                                $.each(errors, function(index, value) {
-                                    $('#error-' + index).text(value)
                                 })
 
                                 $('#button-submit').prop('disabled', false)

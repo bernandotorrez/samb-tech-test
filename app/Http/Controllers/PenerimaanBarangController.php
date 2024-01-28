@@ -54,28 +54,16 @@ class PenerimaanBarangController extends Controller
 
     public function store(Request $request)
     {
-        $formHeader = $request->post('formHeader');
-        $formHeaderData = $request->post('formHeaderData');
-        $formDetail = $request->post('formDetail');
+        $header = $request->post('header');
+        $details = $request->post('details');
 
-        // print_r($formDetail);
-        // echo '<br>';
-
-        foreach($formDetail as $key => $value) {
-            echo $value['name'];
-            echo $value['value'];
-            echo '<br>';
-        }
+        $insertHeader = $this->penerimaanBarangHeaderService->insertHeaderAndDetail($header, $details);
 
         return response()->json([
-            'code' => 409,
+            'code' => 200,
             'success' => true,
-            'message' => 'Customer berhasil di hapus',
-            'data' => null
-        ], 409);
-
-        // $insertHeader = $this->penerimaanBarangHeaderService->create([
-        //     'TrxInNo' => $formHeader['TrxInNo']
-        // ]);
+            'message' => 'Penerimaan Barang Berhasil',
+            'data' => $insertHeader
+        ], 200);
     }
 }

@@ -15,7 +15,7 @@ class PenerimaanBarangHeader extends Model
      * @var array
      */
     protected $fillable = [
-        'TrxInNo', 'WhsIdf', 'TrxInSuppIdf', 'TrxInNotes'
+        'TrxInNo', 'WhsIdf', 'TrxInDate', 'TrxInSuppIdf', 'TrxInNotes'
     ];
 
     /**
@@ -63,5 +63,13 @@ class PenerimaanBarangHeader extends Model
     public function getOrderBy()
     {
         return $this->orderBy;
+    }
+
+    /**
+     * Relation to detail
+     */
+    public function detail()
+    {
+        return $this->hasMany(PenerimaanBarangDetail::class, 'TrxInIDF', 'TrxInPK');
     }
 }
