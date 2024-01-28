@@ -62,7 +62,7 @@ class PenerimaanBarangController extends Controller
         return response()->json([
             'code' => 200,
             'success' => true,
-            'message' => 'Penerimaan Barang Berhasil',
+            'message' => 'Penerimaan Barang Berhasil.',
             'data' => $insertHeader
         ], 200);
     }
