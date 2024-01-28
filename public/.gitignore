@@ -1,0 +1,8 @@
+# *
+upload_banners/
+upload_alur_aduan/
+upload_panduan/
+upload_rfc/
+upload_article/
+upload_pgp_key/
+!.gitignore
