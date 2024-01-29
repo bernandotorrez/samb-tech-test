@@ -1,12 +1,12 @@
 @extends('layouts.main')
 
-@section('title', 'Penerimaan Barang')
+@section('title', 'Pengeluaran Barang')
 
 @section('breadcrumb_1', 'Data')
 
 @section('href_breadcrumb_1', '#')
 
-@section('breadcrumb_2', 'Penerimaan Barang')
+@section('breadcrumb_2', 'Pengeluaran Barang')
 
 @push('styles')
     <!-- Data Table CSS -->
@@ -21,7 +21,7 @@
         <!-- Title -->
         <div class="hk-pg-header">
             <h4 class="hk-pg-title"><span class="pg-title-icon"><span class="feather-icon"><i
-                            data-feather="plus-square"></i></span></span>Penerimaan Barang</h4>
+                            data-feather="plus-square"></i></span></span>Pengeluaran Barang</h4>
         </div>
         <!-- /Title -->
 
@@ -66,7 +66,7 @@
                             </div>
 
                             <a class="btn btn-primary mb-3" type="submit" id="button-submit"
-                                href="{{ route('penerimaan-barang.create') }}">Tambah Data</a>
+                                href="{{ route('pengeluaran-barang.create') }}">Tambah Data</a>
                             <div class="table-wrap table-responsive">
                                 <table id="table"
                                     class="table table-bordered w-100 display pb-30 dataTable dtr-inline"
@@ -88,14 +88,14 @@
                                         @foreach ($data as $row)
                                             <tr>
                                                 <td class="text-center">{{ $loop->iteration }}</td>
-                                                <td class="text-center">{{ $row->TrxInNo }}</td>
-                                                <td>{{ date('d-m-Y', strtotime($row->TrxInDate)) }}</td>
-                                                <td class="text-center">{{ $row->TrxInNotes }}</td>
+                                                <td class="text-center">{{ $row->TrxOutNo }}</td>
+                                                <td>{{ date('d-m-Y', strtotime($row->TrxOutDate)) }}</td>
+                                                <td class="text-center">{{ $row->TrxOutNotes }}</td>
                                                 <td class="text-center">{{ $row->WhsName }}</td>
                                                 <td class="text-center">{{ $row->SupplierName }}</td>
                                                 <td class="text-center">
                                                     <a class="feather-icon"
-                                                        data-id="{{ $row->TrxInPK }}"
+                                                        data-id="{{ $row->TrxOutPK }}"
                                                         onclick="showDetail(this)">
                                                         <i data-feather="list" class="text-success"></i>
                                                     </a>
@@ -137,7 +137,7 @@
             const id = $(e).attr('data-id')
 
             $.ajax({
-                url: "{{ route('penerimaan-barang.detail', '') }}/"+id,
+                url: "{{ route('pengeluaran-barang.detail', '') }}/"+id,
                 method: 'GET',
                 type: 'JSON',
                 headers: {
@@ -150,7 +150,7 @@
                 success: function(response) {
                     console.log(response)
                     const { data } = response
-                    const headerTransactionID = response.data[0].TrxInNo;
+                    const headerTransactionID = response.data[0].TrxOutNo;
 
                     // Set element id = id_transaksi_header
                     $('#id_transaksi_header').text(headerTransactionID)
@@ -161,8 +161,8 @@
                         tableBodyDetail += `
                         <tr>
                             <td>${detail.ProductName}</td>
-                            <td>${detail.TrxInDQtyDus}</td>
-                            <td>${detail.TrxInDQtyPcs}</td>
+                            <td>${detail.TrxOutDQtyDus}</td>
+                            <td>${detail.TrxOutDQtyPcs}</td>
                         </tr>
                         `
                     });

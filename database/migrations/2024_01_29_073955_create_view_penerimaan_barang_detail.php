@@ -30,6 +30,6 @@ class CreateViewPenerimaanBarangDetail extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('view_penerimaan_barang_detail');
+        Schema::dropViewIfExists('view_penerimaan_barang_detail');
     }
 }

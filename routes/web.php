@@ -74,6 +74,8 @@ Route::middleware(['frame', 'allowed.methods'])->group(function () {
             ->name('pengeluaran-barang.')->group(function () {
                 Route::get('/', 'index')->name('index');
                 Route::get('/create', 'create')->name('create');
+                Route::post('/store', 'store')->name('store');
+                Route::get('/detail/{id}', 'detail')->name('detail');
             });
 
             // Artisan need Admin -> use middleware Admina

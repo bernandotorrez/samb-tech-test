@@ -18,7 +18,10 @@ class UserService extends BaseService
 
     public function allActive()
     {
-        return $this->model->where('status', '1')->get();
+        return $this->model->where([
+            'status' => '1',
+            'level' => 'User'
+        ])->get();
     }
 
     public function deleteByIP(string $ip)
