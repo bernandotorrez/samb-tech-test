@@ -62,8 +62,29 @@ class PenerimaanBarangController extends Controller
         return response()->json([
             'code' => 200,
             'success' => true,
-            'message' => 'Penerimaan Barang Berhasil.',
-            'data' => $insertHeader
+            'message' => 'Penerimaan Barang Berhasil',
+            'data' => null
+        ], 200);
+    }
+
+    public function detail($id)
+    {
+        if(!$id) {
+            return response()->json([
+                'code' => 200,
+                'success' => true,
+                'message' => 'Detail Penerimaan Barang tidak ditemukan',
+                'data' => null
+            ], 200);
+        }
+
+        $data = $this->penerimaanBarangDetailService->getByForeignKeyView($id);
+
+        return response()->json([
+            'code' => 200,
+            'success' => true,
+            'message' => 'Detail Penerimaan Barang ditemukan',
+            'data' => $data
         ], 200);
     }
 }

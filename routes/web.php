@@ -30,7 +30,7 @@ Route::middleware(['frame', 'allowed.methods'])->group(function () {
         Route::post('/login', [LoginController::class, 'login'])->name('login-action')->middleware('guest');
 
         Route::get('/login/check-login-block', [LoginController::class, 'checkLoginBlock'])->name('check-login-block')->middleware('guest');
-        
+
         Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 
         Route::middleware(['auth'])->group(function () {
@@ -66,6 +66,7 @@ Route::middleware(['frame', 'allowed.methods'])->group(function () {
                 Route::get('/', 'index')->name('index');
                 Route::get('/create', 'create')->name('create');
                 Route::post('/store', 'store')->name('store');
+                Route::get('/detail/{id}', 'detail')->name('detail');
             });
 
             // Pengeluaran Barang
@@ -74,30 +75,30 @@ Route::middleware(['frame', 'allowed.methods'])->group(function () {
                 Route::get('/', 'index')->name('index');
                 Route::get('/create', 'create')->name('create');
             });
-    
+
             // Artisan need Admin -> use middleware Admina
             Route::prefix('cmd')->middleware('auth.admin')->name('artisan.')->group(function () {
                 Route::get('/optimize', function () {
                     Artisan::call('optimize');
                     Artisan::call('route:clear');
                 })->name('optimize');
-    
+
                 Route::get('/optimize-clear', function () {
                     Artisan::call('optimize:clear');
                 })->name('optimize-clear');
-    
+
                 Route::get('/route-clear', function () {
                     Artisan::call('route:clear');
                 })->name('route-clear');
-    
+
                 Route::get('/migrate', function () {
                     Artisan::call('migrate');
                 })->name('migrate');
-    
+
                 Route::get('/migrate-fresh', function () {
                     Artisan::call('migrate:fresh');
                 })->name('migrate-fresh');
-    
+
                 Route::get('/migrate-rollback', function () {
                     Artisan::call('migrate:rollback');
                 })->name('migrate-rollback');

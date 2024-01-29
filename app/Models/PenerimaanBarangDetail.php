@@ -29,7 +29,8 @@ class PenerimaanBarangDetail extends Model
      * Searchable Column View Table
      */
     protected $searchableColumnView = [
-        'TrxInIDF', 'TrxInDProductIdf', 'TrxInDQtyDus', 'TrxInDQtyPcs', 'created_at'
+        'TrxInDPK', 'TrxInIDF', 'TrxInDProductIdf', 'TrxInDQtyDus', 'TrxInDQtyPcs', 'created_at',
+        'ProductName', 'TrxInNo', 'TrxInDate', 'TrxInNotes', 'WhsName', 'SupplierName'
     ];
 
     protected $orderBy = [
@@ -63,5 +64,13 @@ class PenerimaanBarangDetail extends Model
     public function getOrderBy()
     {
         return $this->orderBy;
+    }
+
+    /**
+     * Relation to header
+     */
+    public function header()
+    {
+        return $this->hasOne(PenerimaanBarangHeader::class, 'TrxInPK', 'TrxInIDF');
     }
 }

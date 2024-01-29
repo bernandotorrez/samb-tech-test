@@ -31,6 +31,40 @@
                 <section class="hk-sec-wrapper">
                     <div class="row">
                         <div class="col-sm">
+
+                            <!-- Modal -->
+                            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                    <h5 class="modal-title">
+                                        Nomor Transaksi Header : <span id="id_transaksi_header"></span>
+                                    </h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <table class="table table-striped">
+                                            <thead>
+                                              <tr>
+                                                <th>Product</th>
+                                                <th>Dus</th>
+                                                <th>Pcs</th>
+                                              </tr>
+                                            </thead>
+                                            <tbody id="table_body_detail">
+                                            </tbody>
+                                          </table>
+                                    </div>
+                                    <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-primary">Save changes</button>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+
                             <a class="btn btn-primary mb-3" type="submit" id="button-submit"
                                 href="{{ route('penerimaan-barang.create') }}">Tambah Data</a>
                             <div class="table-wrap table-responsive">
@@ -46,6 +80,7 @@
                                             <th>Catatan Transaksi</th>
                                             <th>Warehouse</th>
                                             <th>Supplier</th>
+                                            <th>Detail</th>
                                         </tr>
                                     </thead>
 
@@ -58,6 +93,13 @@
                                                 <td class="text-center">{{ $row->TrxInNotes }}</td>
                                                 <td class="text-center">{{ $row->WhsName }}</td>
                                                 <td class="text-center">{{ $row->SupplierName }}</td>
+                                                <td class="text-center">
+                                                    <a class="feather-icon"
+                                                        data-id="{{ $row->TrxInPK }}"
+                                                        onclick="showDetail(this)">
+                                                        <i data-feather="list" class="text-success"></i>
+                                                    </a>
+                                                </td>
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -90,5 +132,51 @@
                 }
             })
         })
+
+        function showDetail(e) {
+            const id = $(e).attr('data-id')
+
+            $.ajax({
+                url: "{{ route('penerimaan-barang.detail', '') }}/"+id,
+                method: 'GET',
+                type: 'JSON',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                beforeSend: function() {
+                    $('#id_transaksi_header').text('')
+                    $('#table_body_detail').html('')
+                },
+                success: function(response) {
+                    console.log(response)
+                    const { data } = response
+                    const headerTransactionID = response.data[0].TrxInNo;
+
+                    // Set element id = id_transaksi_header
+                    $('#id_transaksi_header').text(headerTransactionID)
+
+                    let tableBodyDetail = '';
+
+                    data.forEach((detail) => {
+                        console.log(detail.ProductName)
+
+                        tableBodyDetail += `
+                        <tr>
+                            <td>${detail.ProductName}</td>
+                            <td>${detail.TrxInDQtyDus}</td>
+                            <td>${detail.TrxInDQtyPcs}</td>
+                        </tr>
+                        `
+                    });
+
+                    // Set element id = id_transaksi_header
+                    $('#table_body_detail').html(tableBodyDetail)
+                }
+            })
+
+            $('#myModal').modal({
+                show: true
+            });
+        }
     </script>
 @endpush
