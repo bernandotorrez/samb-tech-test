@@ -11,6 +11,17 @@ class PenerimaanBarangHeaderService extends BaseService
         parent::__construct($model);
     }
 
+     /**
+     * Check Duplicate Data
+     *
+     * @param array @where
+     * @return Collection
+     */
+    public function findDuplicate(array $where)
+    {
+        return $this->model->select($this->primaryKey)->where($where)->count();
+    }
+
     public function insertHeaderAndDetail($header, $details)
     {
         $header['TrxInDate'] = date('Y-m-d');

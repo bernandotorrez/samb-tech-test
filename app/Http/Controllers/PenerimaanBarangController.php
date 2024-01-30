@@ -57,14 +57,36 @@ class PenerimaanBarangController extends Controller
         $header = $request->post('header');
         $details = $request->post('details');
 
+        $where = ['TrxInNo' => $header['TrxInNo']];
+
+        $check = $this->penerimaanBarangHeaderService->findDuplicate($where);
+
+        if($check) {
+            return response()->json([
+                'code' => 409,
+                'success' => true,
+                'message' => 'Nomor Transaksi Penerimaan Barang sudah ada',
+                'data' => null
+            ], 409);
+        }
+
         $insertHeader = $this->penerimaanBarangHeaderService->insertHeaderAndDetail($header, $details);
 
-        return response()->json([
-            'code' => 200,
-            'success' => true,
-            'message' => 'Penerimaan Barang Berhasil',
-            'data' => null
-        ], 200);
+        if($insertHeader) {
+            return response()->json([
+                'code' => 200,
+                'success' => true,
+                'message' => 'Penerimaan Barang Berhasil',
+                'data' => null
+            ], 200);
+        } else {
+            return response()->json([
+                'code' => 200,
+                'success' => true,
+                'message' => 'Penerimaan Barang Gagal',
+                'data' => null
+            ], 200);
+        }
     }
 
     public function detail($id)
