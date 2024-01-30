@@ -18,7 +18,7 @@
         <!-- Title -->
         <div class="hk-pg-header">
             <h4 class="hk-pg-title"><span class="pg-title-icon"><span class="feather-icon"><i
-                            data-feather="plus-square"></i></span></span>Pengeluaran Barang Masuk</h4>
+                            data-feather="plus-square"></i></span></span>Pengeluaran Barang</h4>
         </div>
         <!-- /Title -->
 
@@ -44,73 +44,10 @@
                                     <span class="text-danger" id="error-TrxOutNo"></span>
                                 </div>
 
-                                <div id="header_detail" style="display: none;">
-                                    <div class="form-group">
-                                        <h4 class="mb-30 mt-30 text-center">Header</h4>
-                                        <p class="">Nomor Transaksi Pengeluaran Barang</p>
-                                        <input type="text" class="form-control"
-                                            id="TrxOutNo" name="TrxOutNo"
-                                            autocomplete="off"
-                                            placeholder="Contoh : TRX/OUT/001"
-                                            minlength="3" maxlength="100"
-                                            required>
-                                        <span class="text-danger" id="error-TrxOutNo"></span>
-                                    </div>
+                                <div id="header" style="display: none;"></div>
+                                <div id="detail" style="display: none;"></div>
 
-                                    <div class="form-group">
-                                        <p class="">Tanggal Transaksi</p>
-                                        <input type="text" class="form-control bg-grey-light-1"
-                                            id="TrxOutDate" name="TrxOutDate"
-                                            autocomplete="off"
-                                            minlength="3" maxlength="25"
-                                            value="{{ date('d-m-Y') }}"
-                                            readonly
-                                            required>
-                                        <span class="text-danger" id="error-TrxOutDate"></span>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <p class="">Warehouse</p>
-                                        <select id="WhsIdf" name="WhsIdf" class="form-control"
-                                            aria-placeholder="Pilih Warehouse"
-                                            placeholder="Pilih Warehouse"
-                                            required>
-                                            <option value="">- Pilih Warehouse -</option>
-                                            @foreach ($warehouses as $warehouse)
-                                                <option value="{{ $warehouse->WhsPK }}">{{ $warehouse->WhsName }}</option>
-                                            @endforeach
-                                        </select>
-                                        <span class="text-danger" id="error-WhsIdf"></span>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <p class="">Supplier</p>
-                                        <select id="TrxOutSuppIdf" name="TrxOutSuppIdf" class="form-control"
-                                            aria-placeholder="Pilih Supplier"
-                                            placeholder="Pilih Supplier"
-                                            required>
-                                            <option value="">- Pilih Supplier -</option>
-                                            @foreach ($suppliers as $supplier)
-                                                <option value="{{ $supplier->SupplierPK }}">{{ $supplier->SupplierName }}</option>
-                                            @endforeach
-                                        </select>
-                                        <span class="text-danger" id="error-TrxOutSuppIdf"></span>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <p class="">Catatan Transaksi</p>
-                                        <textarea type="text" class="form-control"
-                                            id="TrxOutNotes" name="TrxOutNotes"
-                                            autocomplete="off"
-                                            placeholder="Contoh : Catatan"
-                                            minlength="3" maxlength="250"
-                                            required></textarea>
-                                        <span class="text-danger" id="error-TrxOutNotes"></span>
-                                    </div>
-                                </div>
-
-                                <button class="btn btn-success" type="button" id="button-tambah-produk">Tambah Produk</button>
-                                <button class="btn btn-primary" type="submit" id="button-submit">Simpan</button>
+                                <button class="btn btn-primary" type="submit" id="button-submit" disabled>Simpan</button>
                             </form>
                         </div>
                     </div>
@@ -130,44 +67,41 @@
             $('#product_list').clone().appendTo('#new_product_list')
         })
 
+        function checkQty(el) {
+            const value = parseInt($(el).val())
+            const max = parseInt($(el).attr('max'))
+
+            if(value > max) $(el).val(max)
+        }
+
         function getPenerimaanHeaderDetail(el) {
             const id = $(el).val()
 
-            $.ajax({
-                method: 'GET',
-                url: "{{ route('penerimaan-barang.header-detail', '') }}/"+id,
-                type: 'JSON',
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                beforeSend: function() {
-                    $('#button-submit').prop('disabled', true)
-                    $('#header_detail').hide()
-                },
-                success: function(response) {
-                    const { data } = response
-                    const { headers, details } = data
-                    const {
-                        TrxInDate,
-                        TrxInNo,
-                        TrxInNotes,
-                        TrxInPK,
-                        TrxInSuppIdf,
-                        WhsIdf
-                    } = headers;
+            if(id) {
+                $.ajax({
+                    method: 'GET',
+                    url: "{{ route('penerimaan-barang.header-detail', '') }}/"+id,
+                    type: 'JSON',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    beforeSend: function() {
+                        $('#button-submit').prop('disabled', true)
+                        $('#header').html('').hide()
+                        $('#detail').html('').hide()
+                    },
+                    success: function(response) {
+                        const { data } = response
+                        const { htmlHeader, htmlDetail } = data
 
-                    // Set Value
-                    $('#TrxOutDate').val(TrxInDate);
-                    $('#WhsIdf').val(WhsIdf);
-                    $('#TrxOutSuppIdf').val(TrxInSuppIdf);
-                    $('#TrxOutNotes').val(TrxInNotes);
+                        // Set Header and Detail
+                        $('#header').show().html(htmlHeader)
+                        $('#detail').show().html(htmlDetail)
 
-                    $('#button-submit').prop('disabled', false)
-
-                    $('#header_detail').show()
-                    console.log(response)
-                }
-            })
+                        $('#button-submit').prop('disabled', false)
+                    }
+                })
+            }
         }
 
         function onlyNumberKey(evt) {
