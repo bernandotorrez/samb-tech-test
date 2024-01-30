@@ -97,8 +97,8 @@
                                         <h4 class="mb-30 mt-30 text-center">Detail</h4>
                                         <p class="">Produk</p>
                                         <select id="TrxInDProductIdf" name="TrxInDProductIdf[]" class="form-control TrxInDProductIdf"
-                                            aria-placeholder="Pilih Supplier"
-                                            placeholder="Pilih Supplier"
+                                            aria-placeholder="Pilih Produk"
+                                            placeholder="Pilih Produk"
                                             required>
                                             <option value="">- Pilih Produk -</option>
                                             @foreach ($products as $product)
