@@ -13,12 +13,13 @@ class CreateViewPenerimaanBarangDetail extends Migration
      */
     public function up()
     {
-        $query = "SELECT pbd.*, p.ProductName, pbh.TrxInNo, pbh.TrxInDate, pbh.TrxInNotes, whs.WhsName, s.SupplierName
+        $query = "SELECT pbd.*, p.ProductName, pbh.TrxInNo, pbh.TrxInDate, pbh.TrxInNotes, whs.WhsPK, whs.WhsName, s.SupplierPK, s.SupplierName
         FROM penerimaan_barang_detail pbd
         INNER JOIN products p ON p.ProductPK = pbd.TrxInDProductIdf
         INNER JOIN penerimaan_barang_header pbh ON pbh.TrxInPK = pbd.TrxInIDF
         INNER JOIN warehouses whs ON whs.WhsPK = pbh.WhsIdf
-        INNER JOIN suppliers s ON s.SupplierPK = pbh.TrxInSuppIdf";
+        INNER JOIN suppliers s ON s.SupplierPK = pbh.TrxInSuppIdf
+        WHERE s.status = '1' AND whs.status = '1' AND p.status = '1'";
 
         Schema::createOrReplaceView('view_penerimaan_barang_detail', $query);
     }

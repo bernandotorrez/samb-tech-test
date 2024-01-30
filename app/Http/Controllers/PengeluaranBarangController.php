@@ -17,6 +17,7 @@ class PengeluaranBarangController extends Controller
     protected MasterSupplierService $masterSupplierService;
     protected MasterProductService $masterProductService;
     protected string $viewName = 'view_pengeluaran_barang_header';
+    protected string $viewPenerimaanBarang = 'view_penerimaan_barang_header';
 
     public function __construct(
         PengeluaranBarangHeaderService $pengeluaranBarangHeaderService,
@@ -64,9 +65,10 @@ class PengeluaranBarangController extends Controller
 
     public function create()
     {
-        $warehouses = $this->masterWarehouseService->allActive();
-        $suppliers = $this->masterSupplierService->allActive();
-        $products = $this->masterProductService->allActive();
+        $warehouses = $this->masterWarehouseService->getByPenerimaanHeader();
+        $suppliers = $this->masterSupplierService->getByPenerimaanHeader();
+        $products = $this->masterProductService->getByPenerimaanHeader();
+        $penerimaanBarang = $this->pengeluaranBarangHeaderService->allView($this->viewPenerimaanBarang);
 
         $compact = compact('warehouses', 'suppliers', 'products');
 
@@ -86,5 +88,10 @@ class PengeluaranBarangController extends Controller
             'message' => 'Pengeluaran Barang Berhasil',
             'data' => null
         ], 200);
+    }
+
+    public function getProductQty($productId)
+    {
+
     }
 }
