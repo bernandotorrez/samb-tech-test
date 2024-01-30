@@ -109,4 +109,42 @@ class PenerimaanBarangController extends Controller
             'data' => $data
         ], 200);
     }
+
+    public function headerDetail($id)
+    {
+        $headers = $this->penerimaanBarangHeaderService->getById($id);
+        $details = $this->penerimaanBarangDetailService->getByForeignKeyView($headers->TrxInPK);
+
+        $html = '<div class="form-group">
+            <h4 class="mb-30 mt-30 text-center">Detail</h4>
+            <p class="">Produk</p>
+
+                @foreach ($products as $product)
+                    <option value="{{ $product->ProductPK }}">{{ $product->ProductName }}</option>
+                @endforeach
+            ';
+
+        foreach($details as $product) {
+            $html .= "<option value='$product->TrxInDProductIdf'>$product->ProductName</option>";
+        }
+
+        $html .= '<select id="TrxOutDProductIdf" name="TrxOutDProductIdf[]" class="form-control TrxOutDProductIdf"
+        aria-placeholder="Pilih Produk"
+        placeholder="Pilih Produk"
+        required>
+        <option value="">- Pilih Produk -</option>';
+
+        $html .= '</select>
+            <span class="text-danger" id="error-TrxOutDProductIdf"></span>
+        </div>';
+
+        $data = compact('headers', 'details', 'html');
+
+        return response()->json([
+            'code' => 200,
+            'success' => true,
+            'message' => 'Detail Penerimaan Barang ditemukan',
+            'data' => $data
+        ], 200);
+    }
 }

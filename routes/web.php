@@ -66,6 +66,7 @@ Route::middleware(['frame', 'allowed.methods'])->group(function () {
             Route::get('/create', 'create')->name('create');
             Route::post('/store', 'store')->name('store');
             Route::get('/detail/{id}', 'detail')->name('detail');
+            Route::get('/header-detail/{id}', 'headerDetail')->name('header-detail');
         });
 
         // Pengeluaran Barang
