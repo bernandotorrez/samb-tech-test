@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Services\MySQL\MasterProductService;
 use App\Services\MySQL\MasterSupplierService;
 use App\Services\MySQL\MasterWarehouseService;
+use App\Services\MySQL\PenerimaanBarangHeaderService;
 use App\Services\MySQL\PengeluaranBarangDetailService;
 use App\Services\MySQL\PengeluaranBarangHeaderService;
 use Illuminate\Http\Request;
@@ -13,20 +14,24 @@ class PengeluaranBarangController extends Controller
 {
     protected PengeluaranBarangHeaderService $pengeluaranBarangHeaderService;
     protected PengeluaranBarangDetailService $pengeluaranBarangDetailService;
+    protected PenerimaanBarangHeaderService $penerimaanBarangHeaderService;
     protected MasterWarehouseService $masterWarehouseService;
     protected MasterSupplierService $masterSupplierService;
     protected MasterProductService $masterProductService;
     protected string $viewName = 'view_pengeluaran_barang_header';
+    protected string $viewPenerimaanBarang = 'view_penerimaan_barang_header';
 
     public function __construct(
         PengeluaranBarangHeaderService $pengeluaranBarangHeaderService,
         PengeluaranBarangDetailService $pengeluaranBarangDetailService,
+        PenerimaanBarangHeaderService $penerimaanBarangHeaderService,
         MasterWarehouseService $masterWarehouseService,
         MasterSupplierService $masterSupplierService,
         MasterProductService $masterProductService
     ) {
         $this->pengeluaranBarangHeaderService = $pengeluaranBarangHeaderService;
         $this->pengeluaranBarangDetailService = $pengeluaranBarangDetailService;
+        $this->penerimaanBarangHeaderService = $penerimaanBarangHeaderService;
         $this->masterWarehouseService = $masterWarehouseService;
         $this->masterSupplierService = $masterSupplierService;
         $this->masterProductService = $masterProductService;
@@ -64,11 +69,13 @@ class PengeluaranBarangController extends Controller
 
     public function create()
     {
-        $warehouses = $this->masterWarehouseService->allActive();
-        $suppliers = $this->masterSupplierService->allActive();
-        $products = $this->masterProductService->allActive();
+        $warehouses = $this->masterWarehouseService->getByPenerimaanHeader();
+        $suppliers = $this->masterSupplierService->getByPenerimaanHeader();
+        $products = $this->masterProductService->getByPenerimaanHeader();
 
-        $compact = compact('warehouses', 'suppliers', 'products');
+        $penerimaanBarangs = $this->penerimaanBarangHeaderService->allView($this->viewPenerimaanBarang);
+
+        $compact = compact('warehouses', 'suppliers', 'products', 'penerimaanBarangs');
 
         return view('pages.pengeluaran-barang.create', $compact);
     }
