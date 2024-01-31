@@ -41,7 +41,7 @@
                                             <option value="{{ $penerimaanBarang->TrxInPK }}">{{ $penerimaanBarang->TrxInNo }}</option>
                                         @endforeach
                                     </select>
-                                    <span class="text-danger" id="error-TrxOutNo"></span>
+
                                 </div>
 
                                 <div id="header" style="display: none;"></div>
