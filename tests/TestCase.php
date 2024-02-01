@@ -9,4 +9,5 @@ abstract class TestCase extends BaseTestCase
     use CreatesApplication;
 
     // test
+    // test2
 }
