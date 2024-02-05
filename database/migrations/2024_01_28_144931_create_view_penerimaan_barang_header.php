@@ -13,7 +13,7 @@ class CreateViewPenerimaanBarangHeader extends Migration
      */
     public function up()
     {
-        $query = "SELECT pbh.*, whs.WhsName, spl.SupplierName
+        $query = "SELECT pbh.*, whs.WhsPK, whs.WhsName, spl.SupplierPK, spl.SupplierName
         FROM penerimaan_barang_header pbh
         INNER JOIN warehouses whs ON whs.WhsPK = pbh.WhsIdf
         INNER JOIN suppliers spl ON spl.SupplierPK = pbh.TrxInSuppIdf
